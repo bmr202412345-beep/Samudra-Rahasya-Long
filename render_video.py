@@ -13,11 +13,11 @@ chat_id = os.environ.get('CHAT_ID')
 telegram_token = os.environ.get('TELEGRAM_BOT_TOKEN')
 
 # 👇 Channel Name 👇
-channel_name = "Oceanic Secrets®" 
+channel_name = "SagarX®" 
 
 print(f"DEBUG: Processing {len(scenes_data)} scenes async...")
 
-# 👇 YAHAN BAS KEYWORDS UPDATE KIYE HAIN AAPKE NAYE TOPIC KE LIYE 👇
+# Fallback keywords for Deep Sea/Mystery theme (Pexels understands English best)
 FALLBACK_KEYWORDS = ["dark ocean waves", "underwater abstract", "deep sea background", "ocean floor", "mysterious underwater"]
 
 TEMP_DIR = "/dev/shm" if os.path.exists("/dev/shm") else os.getcwd()
@@ -62,8 +62,8 @@ async def process_scene(session, i, scene):
         tts_success = False
         for attempt in range(3):
             try:
-                # Same ChristopherNeural voice jaisa aapko chahiye tha
-                communicate = edge_tts.Communicate(text_line, "en-US-ChristopherNeural", rate="+10%")
+                # 👇 YAHAN INDIAN AUDIENCE KE LIYE "MADHUR" VOICE SET KI GAYI HAI 👇
+                communicate = edge_tts.Communicate(text_line, "hi-IN-MadhurNeural", rate="+10%")
                 await asyncio.wait_for(communicate.save(raw_mp3), timeout=15.0)
                 tts_success = True
                 break
@@ -167,7 +167,6 @@ async def main_pipeline():
 
         bgm_path = os.path.abspath("bgm.mp3")
         if os.path.exists(bgm_path):
-            # 👇 YAHAN BGM VOLUME 0.4 SE 0.15 KAR DIYA GAYA HAI 👇
             bgm_cmd = [
                 'ffmpeg', '-y', '-i', raw_video, '-stream_loop', '-1', '-i', bgm_path,
                 '-filter_complex', '[0:a]volume=1.0[voice];[1:a]volume=0.15[bgm];[voice][bgm]amix=inputs=2:duration=first:dropout_transition=0[aout_mix];[aout_mix]volume=2.0[aout]',
@@ -186,14 +185,14 @@ async def main_pipeline():
             if os.path.exists(r['aud']): os.remove(r['aud'])
 
         # ==========================================
-        # PHASE 3: GITHUB RELEASES (THE ULTIMATE FIX)
+        # PHASE 3: GITHUB RELEASES
         # ==========================================
         video_link = None
         print("\n🚀 Uploading Video directly to GitHub Releases...")
         
         run_id = os.environ.get('GITHUB_RUN_ID', str(int(time.time())))
         tag_name = f"vid-{run_id}"
-        repo_name = "ressomoda-cloud/Oceanic-Secrets-Long" 
+        repo_name = "bmr202412345-beep/Samudra-Rahasya-Long" 
         
         try:
             cmd = ['gh', 'release', 'create', tag_name, final_video, '--repo', repo_name, '--notes', 'Automated Video Render']
