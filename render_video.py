@@ -17,8 +17,10 @@ channel_name = "SagarX®"
 
 print(f"DEBUG: Processing {len(scenes_data)} scenes async...")
 
-# Fallback keywords for Deep Sea/Mystery theme (Pexels understands English best)
-FALLBACK_KEYWORDS = ["dark ocean waves", "underwater abstract", "deep sea background", "ocean floor", "mysterious underwater"]
+# --- SMART DYNAMIC FALLBACK KEYWORDS ---
+# GitHub Actions (via n8n) se jo bhi fallback theme aayegi, yeh usey list mein badal dega.
+fallback_env = os.environ.get('FALLBACK_KEYWORDS', 'cinematic background, abstract motion, smooth transition')
+FALLBACK_KEYWORDS = [kw.strip() for kw in fallback_env.split(',')]
 
 TEMP_DIR = "/dev/shm" if os.path.exists("/dev/shm") else os.getcwd()
 
